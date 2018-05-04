@@ -1,15 +1,15 @@
 module.exports = flatten
 
-function flatten(obj) {
+function flatten(obj, options) {
   var flattened = {}
 
   var circlular = []
   var circLoc = []
 
   function _route(prefix, value) {
-    var i, len, type, keys, circularCheck, loc
+    var i, len, type, keys, circularCheck, loc;
 
-    if (value == null) {
+    if (value === null) {
       if (prefix === "") {
         return
       }
@@ -29,7 +29,7 @@ function flatten(obj) {
 
       if (Array.isArray(value)) {
         len = value.length
-        if (len == 0) _route(prefix + "[]", null)
+        if (len == 0 && (!options || options.skipEmpty !== true)) _route(prefix + "[]", null)
         for (i = 0; i < len; i++) {
           _route(prefix + "[" + i + "]", value[i])
         }
@@ -38,13 +38,13 @@ function flatten(obj) {
       keys = Object.keys(value)
       len = keys.length
       if (prefix) prefix = prefix + "."
-      if (len == 0) _route(prefix, null)
+      if (len == 0 && (!options || options.skipEmpty !== true)) _route(prefix, null)
       for (i = 0; i < len; i++) {
         _route(prefix + keys[i], value[keys[i]])
       }
       return
     }
-    flattened[prefix] = value
+    if (!options || options.skipUndefined !== true || value !== undefined) flattened[prefix] = value
   }
 
   _route("", obj)
