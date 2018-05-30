@@ -17,7 +17,9 @@ function flatten(obj, options) {
       return
     }
     type = typeof value
-    if (typeof value == "object") {
+    if (value instanceof Date) {
+      value = value.toString();
+    } else if (typeof value == "object") {
       circularCheck = circlular.indexOf(value)
       if (circularCheck >= 0) {
         loc = circLoc[circularCheck] || "this"
